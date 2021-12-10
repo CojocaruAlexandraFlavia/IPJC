@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,89 +6,64 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 
-
-    private bool jumpKeyWasPressed = false;
-    private Rigidbody rigidBody;
-    private float horizontalInput;
-    [SerializeField] private Transform groundCheckTransform;
-    [SerializeField] private LayerMask playerMask;
-
-    //private CharacterController characterController;
+    private CharacterController characterController;
     private Animator animator;
 
-    //[SerializeField]
+    [SerializeField]
     private float movementSpeed, rotationSpeed, jumpSpeed, gravity;
 
     private Vector3 movementDirection = Vector3.zero;
-    private bool playerGrounded;
+    private bool playerGrounded, jumpKeyWasPressed;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        //characterController = GetComponent<CharacterController>();
+        characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
-        rigidBody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //playerGrounded = characterController.isGrounded;
+        playerGrounded = characterController.isGrounded;
 
         //movement
-        // Vector3 inputMovement = transform.forward * movementSpeed * Input.GetAxisRaw("Vertical");
-        // characterController.Move(inputMovement * Time.deltaTime);
+        Vector3 inputMovement = transform.forward * movementSpeed * Input.GetAxisRaw("Vertical");
+        characterController.Move(inputMovement * Time.deltaTime);
 
-       // transform.Rotate(Vector3.up * Input.GetAxisRaw("Horizontal") * rotationSpeed);
+        transform.Rotate(Vector3.up * Input.GetAxisRaw("Horizontal") * rotationSpeed);
 
 
-        if(Input.GetKeyDown(KeyCode.Space)){
-            if(playerGrounded){
-                movementDirection.y = jumpSpeed;
-            }
+        //jumping
+        if(Input.GetKeyDown(KeyCode.Space) && playerGrounded)
+        {
+            movementDirection.y = jumpSpeed;
             jumpKeyWasPressed = true;
         }
-        
-        //jumping
-
         movementDirection.y -= gravity * Time.deltaTime;
 
-        //haracterController.Move(movementDirection * Time.deltaTime);
+        characterController.Move(movementDirection * Time.deltaTime);
 
 
         //animations
         animator.SetBool("isRunning", Input.GetAxisRaw("Vertical") != 0);
-        //animator.SetBool("isJumping", !characterController.isGrounded);
-
-
-        horizontalInput = Input.GetAxis("Horizontal");
+        animator.SetBool("isJumping", !characterController.isGrounded);
 
     }
 
-    private void FixedUpdate() {
+    // private void FixedUpdate() {
 
-        if(Physics.OverlapSphere(groundCheckTransform.position, 0.1f).Length == 1){
-            Debug.Log("intra if Physics.OverlapSphere...");
-            return;
-        }
+    //     Vector3 inputMovement = transform.forward * movementSpeed * Input.GetAxisRaw("Vertical");
+    //     characterController.Move(inputMovement * Time.deltaTime);
+    //     transform.Rotate(Vector3.up * Input.GetAxisRaw("Horizontal") * rotationSpeed);
 
-        rigidBody.velocity = new Vector3(horizontalInput, rigidBody.velocity.y, rigidBody.velocity.z);
+    //     if (jumpKeyWasPressed){
+    //         movementDirection.y = jumpSpeed;
+    //     }
 
-        // if(Physics.OverlapSphere(groundCheckTransform.position, 0.1f, playerMask).Length == 0){
-        //     return;
-        // }
-        
-        if(jumpKeyWasPressed){
-            rigidBody.AddForce(Vector3.up * 8, ForceMode.VelocityChange);
-            jumpKeyWasPressed = false;
-        }
+    //     movementDirection.y -= gravity * Time.deltaTime;
 
-    }
-
-    private void OnTriggerEnter(Collider other) {
-        if(other.gameObject.layer == 9){
-            Destroy(other.gameObject);
-        }
-    }
+    //     characterController.Move(movementDirection * Time.deltaTime);
+    // }
 }
