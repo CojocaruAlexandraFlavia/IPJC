@@ -65,13 +65,13 @@ Visual Studio 2019 Version: 16.11.8
 
 ## Team Members
 
-[@AlexandraFlaviaCojocaru](https://github.com/CojocaruAlexandraFlavia) 344
+[@AlexandraFlaviaCojocaru](https://github.com/CojocaruAlexandraFlavia) - 344
 
-[@MariaAdrianaTudor](https://github.com/maria-tudor) 344
+[@MariaAdrianaTudor](https://github.com/maria-tudor) - 344
 
-[@MariaFlorea](https://github.com/FloreaMaria) 344
+[@MariaFlorea](https://github.com/FloreaMaria) - 344
 
-[@AndreeaGavrila](https://github.com/AndreeaGavrila) 344
+[@AndreeaGavrila](https://github.com/AndreeaGavrila) - 344
 
-[@AlexandraBuruiana](https://github.com/alexandraburu23) 344
+[@AlexandraBuruiana](https://github.com/alexandraburu23) - 344
 
