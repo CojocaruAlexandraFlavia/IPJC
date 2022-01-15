@@ -85,8 +85,8 @@ public class DatabaseHandler
             cmd.ExecuteNonQuery();
 
             this.CloseConnection();
+        }
     }
-}
 
     public void Update()
     {

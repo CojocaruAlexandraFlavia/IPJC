@@ -10,13 +10,15 @@ public class PlayerController : MonoBehaviour
     private CharacterController characterController;
     private Animator animator;
     LivesBoard livesBoard;
+    ScoreBoard scoreBoard;
 
     [SerializeField]
     private float movementSpeed, rotationSpeed, jumpSpeed, gravity;
-    [SerializeField] private Transform transformPlayer;
+    [SerializeField] Transform transformPlayer;
+    [SerializeField] int paperToCollect;
     private Vector3 movementDirection = Vector3.zero;
     private bool playerGrounded, jumpKeyWasPressed;
-    int collectedPapers = 0, lifes = 3;
+    public GameObject spawnPoint, collect;
     // bool checkPoint = false;
 
     // Start is called before the first frame update
@@ -25,10 +27,17 @@ public class PlayerController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         livesBoard = FindObjectOfType<LivesBoard>();
+        scoreBoard = FindObjectOfType<ScoreBoard>();
+        spawnPoint = GameObject.FindWithTag("Start");
+        collect = GameObject.Find("Collect");
+        paperToCollect = collect.transform.childCount*100;
+        
+        spawnPoint.tag = "LastCheckPoint";
     }
 
     void Update()
     {
+        scoreBoard = FindObjectOfType<ScoreBoard>();
         playerGrounded = characterController.isGrounded;
 
         //movement
@@ -53,49 +62,87 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("isRunning", Input.GetAxisRaw("Vertical") != 0);
         animator.SetBool("isJumping", !characterController.isGrounded);
         
-        if(transformPlayer.position.y < -5f){      
-            Invoke("LoadMyScene", 0.5f);  
-            livesBoard.DecreaseLives(1);
-             
+        if(transform.position.y < -5f){   
+            //daca cade scadem vietile    
+           
+            RespawnPlayer();
         }
 
     }
 
-   
-
+    void RespawnPlayer(){
+        livesBoard.DecreaseLives(1);   
+        if(livesBoard.lives == 0){
+                //daca nu mai avem vieti, incepem nivelul de la capat
+            Invoke("LoadMyScene", 0f);  
+        }
+        else{
+                // daca mai avem vieti, ne respawnam la ultimul checkpoint
+            transformPlayer.position = spawnPoint.transform.position;
+        }
+    }
     void LoadMyScene(){
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);     
+        livesBoard.lives = 3;
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);     
     } 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Inside OnCollision");
-        if(other.gameObject.tag == "Collect")
-        {
+    //     if(other.gameObject.tag == "Collect")
+    //     {
               
-            Debug.Log("Collect");
-            collectedPapers += 1;
-            Debug.Log("Papers Collected" + collectedPapers);        
+    //         Debug.Log("Collect");
+    //         // collectedPapers += 1;
+    //         // Debug.Log("Papers Collected" + collectedPapers);        
               
-        }
-        if(other.gameObject.tag == "CheckPoint")
-        {
-            Debug.Log("checkpoint");
-            // GameObject varGameObject = GameObject.FindGameObjectWithTag("CheckPoint");
-            // varGameObject.GetComponent<CollectPaper>().enabled = false;
-        }
-       if(other.gameObject.tag == "Heart")
-        {
-            Debug.Log("New Life");
-            lifes += 1;
+    //     }
+    //    else if(other.gameObject.tag == "Heart")
+    //     {
+    //         Debug.Log("New Life");
             
+            
+    //     }
+    //     else 
+        if (other.gameObject.tag == "CheckPoint"){
+            other.gameObject.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.magenta;
+            //GameObject.FindWithTag("Flag").GetComponent<MeshRenderer>().material.color = Color.magenta;
+            other.gameObject.tag = "Checked";
+            GameObject.FindWithTag("Flag").tag = "CheckedFlag";
+            spawnPoint = other.gameObject;
         }
+        else if(other.gameObject.tag == "Finish"){
+            if(scoreBoard.score != paperToCollect){
+                Debug.Log("Nu ai acumulat toate cunostintele!");
+            }
+            else{
+                Debug.Log("Cunostinte acumutale");
+                LoadNextLevel();
+                
+                
+            }
+              
+        }
+        else if (other.gameObject.tag == "EvilBook"){
+                RespawnPlayer();
+
+        }
+       
+         
+        // else if(other.gameObject.tag == "Platform"){
+        //          Debug.Log("In moving");
+        //         transform.parent = other.gameObject.transform;
+                //  Debug.Log(other.transform.position.x);
+               // transform.position = other.gameObject.transform.position;
+                
+         //}
         
         
-    }
-    void Restart(){
-        int index = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(index);
-    }
+    
+     } 
+    // void Restart(){
+    //     int index = SceneManager.GetActiveScene().buildIndex;
+    //     SceneManager.LoadScene(index);
+    // }
 
     // void ReloadLevel(){
     //     if(lives == 0){
@@ -125,6 +172,23 @@ public class PlayerController : MonoBehaviour
         movementDirection.y -= gravity * Time.deltaTime;
 
         characterController.Move(movementDirection * Time.deltaTime);
+    }
+
+    // void OnTriggerStay(Collider other){
+        
+             
+    //          if(other.gameObject.tag == "Platform"){
+    //              Debug.Log("In moving");
+    //             transform.position = other.transform.position;
+    //             transform.rotation = other.transform.rotation;
+    //      }
+    //  }
+ 
+    void LoadNextLevel(){
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        PlayerPrefs.SetInt("LastLevelIndex", currentSceneIndex + 1);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(currentSceneIndex);    
     }
     
 }

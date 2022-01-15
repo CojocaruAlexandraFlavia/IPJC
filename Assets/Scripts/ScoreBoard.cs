@@ -6,7 +6,7 @@ using TMPro;
 public class ScoreBoard : MonoBehaviour
 {
     // Start is called before the first frame updateint
-    int score = 0;
+    public int score = 0;
     TMP_Text scoreText;
     void Start(){
         scoreText = GetComponent<TMP_Text>();

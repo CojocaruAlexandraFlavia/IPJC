@@ -10,7 +10,7 @@ public class CollectPaper : MonoBehaviour
     }
     void Update()
     {
-        transform.Rotate(0, 0.5f, 0);
+        transform.Rotate(0, 0.1f, 0);
     }
    
      void OnTriggerEnter(Collider other)
@@ -18,7 +18,7 @@ public class CollectPaper : MonoBehaviour
         if(other.gameObject.tag == "Player")
         { 
             Destroy(this.gameObject, 0.2f);
-            scoreBoard.IncreaseScore(1);
+            scoreBoard.IncreaseScore(100);
            
         }
         

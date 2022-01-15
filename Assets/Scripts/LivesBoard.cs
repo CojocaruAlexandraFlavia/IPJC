@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 public class LivesBoard : MonoBehaviour
 {
-    int lives = 3;
+    public int lives = 3;
     TMP_Text liveText;
     void Start(){
         liveText = GetComponent<TMP_Text>();

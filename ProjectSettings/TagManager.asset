@@ -8,6 +8,23 @@ TagManager:
   - CheckPoint
   - Heart
   - CheckPoints
+  - Platform
+  - Flag
+  - Checked
+  - CheckedFlag
+  - LastCheckPoint
+  - Start
+  - Lime Dot
+  - Green Dot
+  - Orange Dot
+  - Blue Dot
+  - Pink Dot
+  - White Dot
+  - Purple Dot
+  - Lila Dot
+  - Item
+  - EvilBook
+  - PauseMenu
   layers:
   - Default
   - TransparentFX
